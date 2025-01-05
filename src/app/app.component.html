@@ -1,0 +1,76 @@
+<mat-drawer-container class="container">
+  <mat-drawer mode="side" opened [formGroup]="filterForm">
+    <!-- Search box -->
+    <mat-form-field class="example-full-width">
+      <mat-label>Keyword</mat-label>
+
+      <input
+        #keyword
+        matInput
+        [placeholder]="searchPlaceholder"
+        formControlName="text"
+        (keyup)="onInput(keyword.value)"
+      />
+    </mat-form-field>
+
+    <!-- Select -->
+    <mat-form-field class="example-full-width">
+      <mat-label>Filter by</mat-label>
+
+      <mat-select
+        #select
+        formControlName="select"
+        required
+        (valueChange)="onSelectChanged(select.value)"
+      >
+        @for (food of store.foods(); track food) {
+        <mat-option [value]="food.value">
+          {{ food.value }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Date range picker -->
+    <mat-form-field>
+      <!-- Labe -->
+      <mat-label>Enter a date range</mat-label>
+
+      <!-- Input -->
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Start date" />
+
+        <input matEndDate formControlName="end" placeholder="End date" />
+      </mat-date-range-input>
+
+      <!-- MM/DD/YYYY – MM/DD/YYYY -->
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+
+      <!-- Button -->
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+
+      <!-- Date picker -->
+      <mat-date-range-picker
+        #picker
+        (closed)="onDateChanged($event)"
+      ></mat-date-range-picker>
+
+      <!-- matStartDateInvalid -->
+      @if (control('start').hasError('matStartDateInvalid')) {
+      <mat-error>Invalid start date</mat-error>
+      }
+
+      <!-- matEndDateInvalid -->
+      @if (control('end').hasError('matEndDateInvalid')) {
+      <mat-error>Invalid end date</mat-error>
+      }
+    </mat-form-field>
+
+    <p>Selected range: {{ filterForm.value | json }}</p>
+  </mat-drawer>
+
+  <mat-drawer-content>Main content</mat-drawer-content>
+</mat-drawer-container>
